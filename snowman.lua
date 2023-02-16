@@ -57,8 +57,8 @@ function helpPage()
     print("|   Help:                *                        *         |")
     print("|                                           *               |")
     print("|      The objective of the game is to guess the hidden     |")
-    print("|      word correctly. You have to guess one letter at      |")
-    print("|    * a time and a incorrect guess will build part of the  |")
+    print("|      word correctly. You have to guess one letter at a    |")
+    print("|    * time and a incorrect guess will build part of the    |")
     print("|      snowman. If the snowman is completley built before   |")
     print("|      you guess the word then you lose the game!           |")
     print("| *                                                 *       |")
@@ -85,7 +85,11 @@ function addPage()
                 unique = true
             
         end
-        if(unique) then table.insert(dictionary, newWord) end
+        if(unique) then 
+            print("Added to dictionary")
+            table.insert(dictionary, newWord)
+            writeFile(file, newWord)
+        end
         if(not unique) then print("That word already exists in the dictionary") end
     end
 end
@@ -171,7 +175,6 @@ function playGame(attemptsAllowed)
     
     r = math.random(1,#dictionary)
     word = dictionary[r]
-    word = string.gsub(word,"\r", "")
     wordLength = string.len(word)
 
 
@@ -242,14 +245,21 @@ function playGame(attemptsAllowed)
 end
 
 function readFile(file)
-    dictionary = {}
+    local d = {}
     --local csv = require("csv")
     local f = io.open(file)
     for fields in f:lines() do
-        table.insert(dictionary, fields)
+        w = string.gsub(fields,"\r", "")
+        table.insert(dictionary, string.lower(w))
     end
     f:close()
     return dictionary
+end
+
+function writeFile(file, newWord)
+    local f = io.open(file, "a+")
+    f:write(newWord .. "\r")
+    f:close()
 end
 
 function playAgain()
@@ -261,8 +271,10 @@ end
 
 function main()
     dictionary = {}
-    if(#arg ~= 2) then 
+    
+    if(#arg == 1) then 
         dictionary = readFile(arg[1])
+        file = arg[1]
     else
         dictionary = allWords
     end
@@ -270,6 +282,8 @@ function main()
     guessArray = {}
     guessed = {}
     os.execute("clear")
+ 
+    
     userIn = homePage()
     while(userIn ~= 'q' or userIn ~= 'Q' or didWin(guessArray, wordArray) or play) do
         
