@@ -22,7 +22,7 @@ function printGame(table, numWrong)
     for i=1,#guessed do
         g = g .. " " .. guessed[i]
     end
-    print()
+    print("The word is: " .. word)
     printSnowman(numWrong)
     print()
     print()
@@ -42,10 +42,11 @@ function homePage()
     print("|                                                           |")
     print("|      A - Add words to dictionary               *  __      |")
     print("|                         *                       _|==|_    |")
-    print("|      H - Help                                    ('')     |")
-    print("|                                         *       (`^^')    |")
+    print("|      H - Help                                    ('')___/ |")
+    print("|                                         *    >--(`^^')    |")
     print("|      Q - Quit                                  (`^'^'`)   |")
     print(" -----------------------------------------------------------")
+    
     return io.read()
 end
 
@@ -104,8 +105,8 @@ function printSnowman(numWrong)
     print("The word is " .. wordLength .. " letters long")
     print()
     local sHat = {"     __", "   _|==|_ "}
-    local sHead = "    ('')"
-    local sMiddle = "   (`^^')"
+    local sHead = {"    ('')", "___/"}
+    local sMiddle = {"(`^^')", ">--"}
     local sBottom = "  (`^'^'`)"
 
     if(numWrong > 0) then -- If atleast one worng guess, print hat.
@@ -113,15 +114,23 @@ function printSnowman(numWrong)
             print(sHat[i])
         end
     end
-    if(numWrong > 1) then -- If atleast two worng guess, print head.
-        print(sHead)
+    if(numWrong > 1 and numWrong < 5) then -- If atleast two worng guess, print head.
+        print(sHead[1])
     end
-    if(numWrong > 2) then -- If atleast 3 worng guess, print body.
-        print(sMiddle)
+    if(numWrong > 4) then -- If atleast 4 worng guess, print bottom.
+        print(sHead[1] .. sHead[2])
+    end
+    
+    if(numWrong > 2 and numWrong < 6) then -- If atleast 3 worng guess, print body.
+        print("   " .. sMiddle[1])
+    end
+    if(numWrong > 5) then -- If atleast 4 worng guess, print bottom.
+        print(sMiddle[2] .. sMiddle[1])
     end
     if(numWrong > 3) then -- If atleast 4 worng guess, print bottom.
         print(sBottom)
     end
+    
 end
 
 -- Checks if the guessed character is in the word and is added to the guessArray if it is and returns true.
@@ -162,7 +171,7 @@ function playGame(attemptsAllowed)
     
     r = math.random(1,#dictionary)
     word = dictionary[r]
-
+    word = string.gsub(word,"\r", "")
     wordLength = string.len(word)
 
 
@@ -177,6 +186,7 @@ function playGame(attemptsAllowed)
 
     while(badAttempts < attemptsAllowed) do
         print("You have " .. (attemptsAllowed-badAttempts) .. " more attempts")
+        print("Type 'quit' to quit")
         if(didWin(guessArray, wordArray)) then
             print("////////////////////////////////////////")
             print("               YOU WIN")
@@ -185,11 +195,13 @@ function playGame(attemptsAllowed)
         else
             io.write('Guess a letter:  ')
             char = io.read()
+            char = string.lower(char)
             if(char == "quit") then break end
             
             while(#char ~= 1) do
             io.write('Guess a letter:  ')
             char = io.read()
+            char = string.lower(char)
             end
             
 
@@ -257,13 +269,13 @@ function main()
     wordArray = {}
     guessArray = {}
     guessed = {}
-
+    os.execute("clear")
     userIn = homePage()
     while(userIn ~= 'q' or userIn ~= 'Q' or didWin(guessArray, wordArray) or play) do
         
         if(userIn == 's' or userIn == 'S') then
             os.execute("clear")
-            playGame(4)
+            playGame(6)
             sleep(3)
             userIn = 'b'
             
