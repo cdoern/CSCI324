@@ -22,7 +22,7 @@ function printGame(table, numWrong)
     for i=1,#guessed do
         g = g .. " " .. guessed[i]
     end
-    print("The word is: " .. word)
+    
     printSnowman(numWrong)
     print()
     print()
@@ -34,17 +34,17 @@ end
 
 function homePage()
     print(" -----------------------------------------------------------")
-    print("|       *                   SNOWMAN                         |")
-    print("|                    *                         *            |")
+    print("|       \27[90;36m*\27[0m                   \27[90;36mSNOWMAN\27[0m                         |")
+    print("|                    \27[90;36m*\27[0m                         \27[90;36m*\27[0m            |")
     print("|   Options:                                                |")
-    print("|                                 *           *             |")
-    print("|      S - Start Game                                       |")
+    print("|                                 \27[90;36m*\27[0m           \27[90;36m*\27[0m             |")
+    print("|      \27[1mS - Start Game\27[0m                                       |")
     print("|                                                           |")
-    print("|      A - Add words to dictionary               *  __      |")
-    print("|                         *                       _|==|_    |")
-    print("|      H - Help                                    ('')___/ |")
-    print("|                                         *    >--(`^^')    |")
-    print("|      Q - Quit                                  (`^'^'`)   |")
+    print("|      \27[1mA - Add words to dictionary\27[0m               \27[90;36m*  __   \27[0m   |")
+    print("|                         \27[90;36m*\27[0m                       \27[90;36m_|==|_   \27[0m |")
+    print("|      \27[1mH - Help\27[0m                                    \27[90;36m('')___/ \27[0m|")
+    print("|                                         \27[90;36m*    >--(`^^') \27[0m   |")
+    print("|      \27[1mQ - Quit \27[0m                                 \27[90;36m(`^'^'`)  \27[0m |")
     print(" -----------------------------------------------------------")
     
     return io.read()
@@ -52,17 +52,17 @@ end
 
 function helpPage()
     print(" -----------------------------------------------------------")
-    print("|        *                 SNOWMAN         *                |")
-    print("| *             *                     *                     |")
-    print("|   Help:                *                        *         |")
-    print("|                                           *               |")
+    print("|        \27[90;36m*\27[0m                 \27[90;36mSNOWMAN\27[0m         \27[90;36m*\27[0m                |")
+    print("| \27[90;36m*\27[0m             \27[90;36m*\27[0m                     \27[90;36m*\27[0m                     |")
+    print("|   Help:                \27[90;36m*\27[0m                        \27[90;36m*\27[0m         |")
+    print("|                                           \27[90;36m*\27[0m               |")
     print("|      The objective of the game is to guess the hidden     |")
     print("|      word correctly. You have to guess one letter at a    |")
-    print("|    * time and a incorrect guess will build part of the    |")
+    print("|    \27[90;36m*\27[0m time and a incorrect guess will build part of the    |")
     print("|      snowman. If the snowman is completley built before   |")
     print("|      you guess the word then you lose the game!           |")
-    print("| *                                                 *       |")
-    print("|      B - Go Back              *                           |")
+    print("| \27[90;36m*\27[0m                                                 \27[90;36m*\27[0m       |")
+    print("|      \27[1mB - Go Back\27[0m              \27[90;36m*\27[0m                           |")
     print(" -----------------------------------------------------------")
 
     return io.read()
@@ -105,7 +105,8 @@ end
 
 -- Prints current snowman based on wrong guesses.
 function printSnowman(numWrong)
-    print("Snowman")
+    print("\27[90;36m       SNOWMAN \27[0m")
+    print("The word is: " .. "\27[102;97m" .. word .. "\27[0m") 
     print("The word is " .. wordLength .. " letters long")
     print()
     local sHat = {"     __", "   _|==|_ "}
@@ -115,24 +116,24 @@ function printSnowman(numWrong)
 
     if(numWrong > 0) then -- If atleast one worng guess, print hat.
         for i=1,#sHat do
-            print(sHat[i])
+            print("\27[90;36m" .. sHat[i] .. "\27[0m")
         end
     end
     if(numWrong > 1 and numWrong < 5) then -- If atleast two worng guess, print head.
-        print(sHead[1])
+        print("\27[90;36m" .. sHead[1] .. "\27[0m")
     end
     if(numWrong > 4) then -- If atleast 4 worng guess, print bottom.
-        print(sHead[1] .. sHead[2])
+        print("\27[90;36m" .. sHead[1] .. sHead[2] .. "\27[0m")
     end
     
     if(numWrong > 2 and numWrong < 6) then -- If atleast 3 worng guess, print body.
-        print("   " .. sMiddle[1])
+        print("\27[90;36m   " .. sMiddle[1] .. "\27[0m")
     end
     if(numWrong > 5) then -- If atleast 4 worng guess, print bottom.
-        print(sMiddle[2] .. sMiddle[1])
+        print("\27[90;36m" .. sMiddle[2] .. sMiddle[1] .. "\27[0m")
     end
     if(numWrong > 3) then -- If atleast 4 worng guess, print bottom.
-        print(sBottom)
+        print("\27[90;36m" .. sBottom .. "\27[0m")
     end
     
 end
@@ -191,9 +192,9 @@ function playGame(attemptsAllowed)
         print("You have " .. (attemptsAllowed-badAttempts) .. " more attempts")
         print("Type 'quit' to quit")
         if(didWin(guessArray, wordArray)) then
-            print("////////////////////////////////////////")
-            print("               YOU WIN")
-            print("////////////////////////////////////////")
+            print("\27[42;31m                                         \27[0m")
+            print("\27[42;31m                 YOU WIN                 \27[0m")
+            print("\27[42;31m                                         \27[0m")
             return
         else
             io.write('Guess a letter:  ')
@@ -229,16 +230,17 @@ function playGame(attemptsAllowed)
         printGame(guessArray, badAttempts)
     end
     if(didWin(guessArray, wordArray)) then
-        print("////////////////////////////////////////")
-        print("               YOU WIN")
-        print("////////////////////////////////////////")
+        print("\27[42;31m                                         \27[0m")
+        print("\27[42;31m                 YOU WIN                 \27[0m")
+        print("\27[42;31m                                         \27[0m")
         
     else 
         os.execute("clear")
         printGame(wordArray, badAttempts)
-        print("////////////////////////////////////////")
-        print("               YOU LOST")
-        print("////////////////////////////////////////")
+        print("\27[41;31m                                         \27[0m")
+        print("\27[41;31m                YOU LOSE                 \27[0m")
+        print("\27[41;31m                                         \27[0m")
+ 
         
     end
     
@@ -250,6 +252,7 @@ function readFile(file)
     local f = io.open(file)
     for fields in f:lines() do
         w = string.gsub(fields,"\r", "")
+        --w = string.gsub(fields,"'", "")
         table.insert(dictionary, string.lower(w))
     end
     f:close()
