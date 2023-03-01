@@ -87,7 +87,7 @@ function addPage()
         end
         if(unique) then 
             print("Added to dictionary")
-            table.insert(dictionary, newWord)
+            table.insert(dictionary, string.lower(newWord))
             writeFile(file, newWord)
         end
         if(not unique) then print("That word already exists in the dictionary") end
@@ -207,8 +207,6 @@ function playGame(attemptsAllowed)
             char = io.read()
             char = string.lower(char)
             end
-            
-
             if(didGuess(char)) then
                 print("You already guessed that letter")
                 sleep(1)
@@ -216,9 +214,7 @@ function playGame(attemptsAllowed)
             elseif(wordCheck(char, wordArray)) then
                 print("That is a correct letter, good guess")
                 table.insert(guessed, char)
-
             else 
-                
                 print("Nope, that letter is not in the word")
                 badAttempts = badAttempts + 1
                 table.insert(guessed, char)
@@ -248,7 +244,6 @@ end
 
 function readFile(file)
     local d = {}
-    --local csv = require("csv")
     local f = io.open(file)
     for fields in f:lines() do
         w = string.gsub(fields,"\r", "")
@@ -261,7 +256,7 @@ end
 
 function writeFile(file, newWord)
     local f = io.open(file, "a+")
-    f:write(newWord .. "\r")
+    f:write(newWord .. "\n")
     f:close()
 end
 
@@ -271,6 +266,34 @@ function playAgain()
         if c == 'y' then return true
         else return false end
 end 
+
+function play(userIn)
+    if(string.lower(userIn) == 's') then
+        os.execute("clear")
+        playGame(6)
+        sleep(3)
+        userIn = 'b'
+        return userIn
+
+    elseif (string.lower(userIn) == 'b') then
+        os.execute("clear")
+        return homePage()
+
+    elseif(string.lower(userIn) == 'h' or string.lower(userIn) == 'b') then
+         os.execute("clear")
+         return helpPage()
+
+    elseif(string.lower(userIn) == 'a') then
+        os.execute("clear")
+        return addPage()
+
+    elseif(string.lower(userIn) == 'q') then
+        os.execute("clear")
+        return userIn
+
+    end
+    return 'b'
+end
 
 function main()
     dictionary = {}
@@ -288,33 +311,8 @@ function main()
  
     
     userIn = homePage()
-    while(userIn ~= 'q' or userIn ~= 'Q' or didWin(guessArray, wordArray) or play) do
-        
-        if(userIn == 's' or userIn == 'S') then
-            os.execute("clear")
-            playGame(6)
-            sleep(3)
-            userIn = 'b'
-            
-            
-        elseif (userIn == 'b' or userIn == 'B') then
-            os.execute("clear")
-            userIn = homePage()
-        
-        elseif(userIn == 'h' or userIn == 'H' or userIn == 'b' or userIn == 'B') then
-             os.execute("clear")
-             userIn = helpPage()
-
-        elseif(userIn == 'a' or userIn == 'A') then
-            os.execute("clear")
-            userIn = addPage()
-
-        elseif(userIn == 'q' or userIn == 'Q') then
-            os.execute("clear")
-            break
-        else userIn = 'b'
-        end
-        
+    while(string.lower(userIn) ~= 'q' and (didWin(guessArray, wordArray) or play)) do
+      userIn = play(userIn)
     end
 end
 
