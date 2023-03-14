@@ -180,8 +180,24 @@ function playGame(attemptsAllowed)
 
 
     for i=1,wordLength do
+        inserted = false
         wordArray[i] = string.sub(word,i,i)
-        guessArray[i] = '_'
+       -- print(string.gmatch(word, "%D"))
+        for match in string.gmatch(wordArray[i], "%W") do
+            print(match)
+            print("invalid char")
+            guessArray[i] = wordArray[i]
+            inserted= true
+        end
+        for match in string.gmatch(wordArray[i], "%d") do
+            print(match)
+            print("invalid char here?")
+            guessArray[i] = wordArray[i]
+            inserted = true
+        end
+        if (not inserted) then
+            guessArray[i] = '_'
+        end
     end
     
     print()
@@ -202,10 +218,23 @@ function playGame(attemptsAllowed)
             char = string.lower(char)
             if(char == "quit") then break end
             
+            for match in string.gmatch(char, "%W") do
+                print("invalid char")
+                char = ''
+            end
+            for match in string.gmatch(char, "%d") do
+                print("invalid char")
+                char = ''
+            end
+            if (string.find(char, "&") ~= nil or string.find(char, "/%") ~= nil) then
+                print("invalid character!")
+                char = ''
+            end             
+            
             while(#char ~= 1) do
-            io.write('Guess a letter:  ')
-            char = io.read()
-            char = string.lower(char)
+                io.write('Guess a letter:  ')
+                char = io.read()
+                char = string.lower(char)
             end
             if(didGuess(char)) then
                 print("You already guessed that letter")
@@ -213,9 +242,11 @@ function playGame(attemptsAllowed)
 
             elseif(wordCheck(char, wordArray)) then
                 print("That is a correct letter, good guess")
+                sleep(1)
                 table.insert(guessed, char)
             else 
                 print("Nope, that letter is not in the word")
+                sleep(1)
                 badAttempts = badAttempts + 1
                 table.insert(guessed, char)
             end

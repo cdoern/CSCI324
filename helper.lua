@@ -1,3 +1,4 @@
+-- if your dictionary file does not work, try running this to create a new one with /n
 function readFile(file)
     local d = {}
     local f = io.open("dictionary.txt")
