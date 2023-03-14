@@ -1,5 +1,6 @@
 -----------------------------------------------------
 -- snowman.lua
+-- Sean O'Sullivan, Charlie Doern, Lauren Chilton
 -- CSCI 324
 -- Description: Play the game of snowman where
 -- you have to guess the word one character at a time
@@ -167,6 +168,23 @@ function sleep(n)
     while clock() - t0 <= n do end
 end
 
+-- Checks the validity of a given character
+function checkValidity(char)
+    for match in string.gmatch(char, "%W") do -- if not a letter
+        print("invalid char")
+        char = ''
+    end
+    for match in string.gmatch(char, "%d") do -- if a number
+        print("invalid char")
+        char = ''
+    end
+    if (string.find(char, "&") ~= nil or string.find(char, "/%") ~= nil) then -- or if these two special cases
+        print("invalid character!")
+        char = ''
+    end      
+    return char       
+end
+
 -- Plays game
 function playGame(attemptsAllowed)
     local badAttempts = 0
@@ -182,16 +200,11 @@ function playGame(attemptsAllowed)
     for i=1,wordLength do
         inserted = false
         wordArray[i] = string.sub(word,i,i)
-       -- print(string.gmatch(word, "%D"))
-        for match in string.gmatch(wordArray[i], "%W") do
-            print(match)
-            print("invalid char")
+        for match in string.gmatch(wordArray[i], "%W") do -- make sure to insert non letters so people dont need to guess them.
             guessArray[i] = wordArray[i]
             inserted= true
         end
         for match in string.gmatch(wordArray[i], "%d") do
-            print(match)
-            print("invalid char here?")
             guessArray[i] = wordArray[i]
             inserted = true
         end
@@ -203,7 +216,7 @@ function playGame(attemptsAllowed)
     print()
     printGame(guessArray, 0)
     print()
-
+    ::playloop::
     while(badAttempts < attemptsAllowed) do
         print("You have " .. (attemptsAllowed-badAttempts) .. " more attempts")
         print("Type 'quit' to quit")
@@ -217,24 +230,26 @@ function playGame(attemptsAllowed)
             char = io.read()
             char = string.lower(char)
             if(char == "quit") then break end
-            
-            for match in string.gmatch(char, "%W") do
-                print("invalid char")
-                char = ''
-            end
-            for match in string.gmatch(char, "%d") do
-                print("invalid char")
-                char = ''
-            end
-            if (string.find(char, "&") ~= nil or string.find(char, "/%") ~= nil) then
-                print("invalid character!")
-                char = ''
-            end             
+
+            char = checkValidity(char)    -- checks if what we have is a valid char
+            if(char == '') then
+                sleep(1)
+                os.execute("clear")
+                printGame(guessArray, badAttempts)
+                goto playloop
+            end 
             
             while(#char ~= 1) do
                 io.write('Guess a letter:  ')
                 char = io.read()
                 char = string.lower(char)
+                char = checkValidity(char)
+                if(char == '') then
+                    sleep(1)
+                    os.execute("clear")
+                    printGame(guessArray, badAttempts)
+                    goto playloop
+                end 
             end
             if(didGuess(char)) then
                 print("You already guessed that letter")
@@ -273,12 +288,12 @@ function playGame(attemptsAllowed)
     
 end
 
+-- readFile opens and reads the dictionary
 function readFile(file)
     local d = {}
-    local f = io.open(file)
+    local f = io.open(file) 
     for fields in f:lines() do
         w = string.gsub(fields,"\r", "")
-        --w = string.gsub(fields,"'", "")
         table.insert(dictionary, string.lower(w))
     end
     f:close()
@@ -291,6 +306,7 @@ function writeFile(file, newWord)
     f:close()
 end
 
+-- asks the user if they want to play again
 function playAgain()
     io.write("Play again? (y/n) ")
         c = io.read()
@@ -308,19 +324,19 @@ function play(userIn)
 
     elseif (string.lower(userIn) == 'b') then
         os.execute("clear")
-        return homePage()
+        return homePage() -- go back to homepage
 
     elseif(string.lower(userIn) == 'h' or string.lower(userIn) == 'b') then
          os.execute("clear")
-         return helpPage()
+         return helpPage() -- goto help page
 
     elseif(string.lower(userIn) == 'a') then
         os.execute("clear")
-        return addPage()
+        return addPage() -- go to the page to add words
 
     elseif(string.lower(userIn) == 'q') then
         os.execute("clear")
-        return userIn
+        return userIn -- quit
 
     end
     return 'b'
