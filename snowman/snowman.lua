@@ -280,7 +280,7 @@ function playGame(attemptsAllowed)
         os.execute("clear")
         printGame(wordArray, badAttempts)
         print("\27[41;31m                                         \27[0m")
-        print("\27[41;31m                YOU LOSE                 \27[0m")
+        print("\27[41;32m                YOU LOSE                 \27[0m")
         print("\27[41;31m                                         \27[0m")
  
         
