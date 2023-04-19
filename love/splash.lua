@@ -14,8 +14,7 @@ splash.co = {}
 
 
 
-local 
-function newButton(text, fn)
+function splash.newButton(text, fn)
     return {
         text = text,
         fn = fn, 
@@ -31,7 +30,7 @@ local font = nil
 function splash.load()
     font = love.graphics.newFont(32)
     love.graphics.setBackgroundColor(0.1, 0.5, 0.9)
-    table.insert(buttons, newButton(
+    table.insert(buttons, splash.newButton(
         "Start Game",
         function()
             splash.play = true
@@ -39,7 +38,7 @@ function splash.load()
             --print("Starting game") -- this is where you can code what to do when user clicks button
         end))
 
-    table.insert(buttons, newButton(
+    table.insert(buttons, splash.newButton(
         "MultiPlayer",
         function()
             print("Beginning Multiplayer")
@@ -48,13 +47,13 @@ function splash.load()
             splash.mode = "multi"
         end))
 
-    table.insert(buttons, newButton(
+    table.insert(buttons, splash.newButton(
         "Help",
         function()
             print("Going to settings menu")
         end))
 
-    table.insert(buttons, newButton(
+    table.insert(buttons, splash.newButton(
         "Quit",
         function()
             love.event.quit(0)
@@ -79,11 +78,10 @@ function splash.draw()
         button.last = button.now
 
         local bx = (ww * 0.5) - (button_width * 0.5)
-        local by = (wh * 0.5) - (total_height * 0.5) + cursor_y
+        local by = 0 + (BUTTON_HEIGHT + margin) * i
 
         local color = {0.4, 0.4, 0.5, 1.0}
-        local mx, my = love.mouse.getPosition()
-
+        local mx, my = love.mouse.getPosition(0)
         local cursorHot = (mx > bx and mx < bx + button_width) and (my > by and my < by + BUTTON_HEIGHT)
         
         if cursorHot then 
@@ -91,7 +89,8 @@ function splash.draw()
         end
 
         button.now = love.mouse.isDown(1)
-     --   print(button.now)
+      --  print(button.now)
+        --print(cursorHot)
         if button.now and cursorHot then --and not button.last and hot then
             button.now = false
             button.fn()
@@ -121,6 +120,5 @@ function splash.draw()
     end
 
 end
-
 
 
