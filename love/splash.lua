@@ -5,13 +5,7 @@ BUTTON_HEIGHT = 64
 splash = {}
 splash.play = false
 splash.mode = "single"
-splash.playercount = 1
 splash.waitingToResize = true
-local Play = false
-splash.co = {}
-
-
-
 
 
 function splash.newButton(text, fn)
@@ -35,22 +29,14 @@ function splash.load()
         function()
             splash.play = true
             splash.mode = "single"
-            --print("Starting game") -- this is where you can code what to do when user clicks button
         end))
 
     table.insert(buttons, splash.newButton(
         "MultiPlayer",
         function()
             print("Beginning Multiplayer")
-            splash.playercount = 2
             splash.play = true
             splash.mode = "multi"
-        end))
-
-    table.insert(buttons, splash.newButton(
-        "Help",
-        function()
-            print("Going to settings menu")
         end))
 
     table.insert(buttons, splash.newButton(

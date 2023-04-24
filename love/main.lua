@@ -18,7 +18,7 @@ font = love.graphics.newFont(32)
 BUTTON_HEIGHT = 64
 t1 = nil
 
-function Player:new(minY, maxY, img)
+function Player.new(minY, maxY, img)
     local self = setmetatable({}, Player)
     self.x = 200
     self.y = maxY - 50
@@ -78,8 +78,7 @@ function Player:new(minY, maxY, img)
 
     num_platforms = math.random(50, 70)
 
-    num_enemies = math.random(40, 70)
-    --num_enemies = 4
+    num_enemies = math.random(40, 60)
 
     for i=2, num_platforms, 1 do
         newx = math.random(100, 10000)
@@ -177,13 +176,8 @@ function Player:update(dt, platforms)
     end
     if love.keyboard.isDown(self.left) and not self.collisionLeft then
         self.collisionRight = false
-        self.collisionLeft = false
-       -- if self.grounded then
-           
+        self.collisionLeft = false           
         self.image = playerAnimation2[math.floor(count, 1)%6 + 1]
-         --   gemAnim = gems[math.floor(count, 1)%5 + 1]
-           -- eagleAnim = eagle[math.floor(count, 1)%4 + 1]
-       -- end
         if self.x > 60 then 
             self.x = self.x - self.speed * dt
         else
@@ -202,7 +196,9 @@ function Player:update(dt, platforms)
                 end
             end
         end
-        self.progress.val = self.progress.val - self.speed * dt / 10400
+        if self.progress.val > 0 then 
+            self.progress.val = self.progress.val - self.speed * dt / 10400
+        end
       elseif love.keyboard.isDown(self.right)  and not self.collisionRight then
         self.collisionRight = false
         self.collisionLeft = false
@@ -308,7 +304,6 @@ end
 
 function Player:draw()
     require "splash"
-
     if self.state == "intro" then
         splash.draw()
         if splash.play then
@@ -391,14 +386,14 @@ function love.load()
     splash.load()
     splash.draw()
 
-    player1 = Player:new(0, 500, "")
+    player1 = Player.new(0, 500, "")
     player1.left = "left"
     player1.right = "right"
     player1.jump = "up"
     player1.player = 1
 
 
-    player2 = Player:new(600, 1100, "")
+    player2 = Player.new(600, 1100, "")
     player2.left = "a"
     player2.right = "d"
     player2.jump = "w"
@@ -495,3 +490,4 @@ function love.mousepressed(x, y, button, istouch)
         end
     end
  end
+
