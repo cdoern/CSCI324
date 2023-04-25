@@ -1,13 +1,15 @@
--- Purpose: Creates a basic start menu for a interactive game
+-- splash.lua Charlie Doern Sean O'Sullivan Lauren Chilton 4/25/23
+-- this is the start screen code for our platformer with a start, multiplayer, and quit button.
 
 BUTTON_HEIGHT = 64
 
-splash = {}
-splash.play = false
-splash.mode = "single"
+splash = {} -- the table to access when requiring the module
+splash.play = false -- we do not want to play until we click
+splash.mode = "single" -- default is single player
 splash.waitingToResize = true
 
 
+-- creates the 3 buttons when called and assigns a function to them
 function splash.newButton(text, fn)
     return {
         text = text,
@@ -21,17 +23,18 @@ end
 local buttons = {}
 local font = nil
 
+-- loads the screen and creates necessary variables
 function splash.load()
     font = love.graphics.newFont(32)
     love.graphics.setBackgroundColor(0.1, 0.5, 0.9)
-    table.insert(buttons, splash.newButton(
+    table.insert(buttons, splash.newButton( -- start button
         "Start Game",
         function()
             splash.play = true
             splash.mode = "single"
         end))
 
-    table.insert(buttons, splash.newButton(
+    table.insert(buttons, splash.newButton( -- multiplayer button
         "MultiPlayer",
         function()
             print("Beginning Multiplayer")
@@ -39,7 +42,7 @@ function splash.load()
             splash.mode = "multi"
         end))
 
-    table.insert(buttons, splash.newButton(
+    table.insert(buttons, splash.newButton( -- quit button
         "Quit",
         function()
             love.event.quit(0)
@@ -47,9 +50,12 @@ function splash.load()
 
 end
 
+-- there is nothing to update in this one but this needs to be defined.
 function splash.update(dt)
 end
 
+
+-- draw the buttons and determine if the cursor is hot
 function splash.draw()
     local ww = love.graphics.getWidth()
     local wh = love.graphics.getHeight()
@@ -70,20 +76,21 @@ function splash.draw()
         local mx, my = love.mouse.getPosition(0)
         local cursorHot = (mx > bx and mx < bx + button_width) and (my > by and my < by + BUTTON_HEIGHT)
         
+        -- if we are over the button by determining the mouse position, change color
         if cursorHot then 
             color = {0.8, 0.8, 0.9, 1.0}
         end
 
+        -- get if button 1 is pressed
         button.now = love.mouse.isDown(1)
-      --  print(button.now)
-        --print(cursorHot)
-        if button.now and cursorHot then --and not button.last and hot then
+        if button.now and cursorHot then -- if the left mouse button is being pressed and we are on one of our screen buttons, execute the function 
             button.now = false
             button.fn()
         end
 
         love.graphics.setColor(unpack(color))
     
+        -- draw the buttons
         love.graphics.rectangle(
             "fill", 
             bx,
@@ -104,7 +111,4 @@ function splash.draw()
         )
         cursor_y = cursor_y + (BUTTON_HEIGHT + margin)
     end
-
 end
-
-
