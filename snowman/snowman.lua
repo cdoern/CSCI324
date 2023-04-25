@@ -6,12 +6,6 @@
 -- you have to guess the word one character at a time
 -----------------------------------------------------
 
-allWords = {"hello", "world", "testing", "scheme", 
-"snowman", "holycross", "csci324", "classof2023", "PL",
-"lisp", "functional", "recusrion", "lua", "incorrect", "Church",
-"Turing", "Ada", "Grace", "Alonzo", "parentheses"
-}
-
 -- Prints out the previous guesses, current snowman, word progress
 function printGame(table, numWrong)
     local g = ""
@@ -196,7 +190,6 @@ function playGame(attemptsAllowed)
     word = dictionary[r]
     wordLength = string.len(word)
 
-
     for i=1,wordLength do
         inserted = false
         wordArray[i] = string.sub(word,i,i)
@@ -230,6 +223,14 @@ function playGame(attemptsAllowed)
             char = io.read()
             char = string.lower(char)
             if(char == "quit") then break end
+
+            if string.len(char) > 1 then
+                print("sorry, only one letter at a time.")
+                sleep(1)
+                os.execute("clear")
+                printGame(guessArray, badAttempts)
+                goto playloop
+            end
 
             char = checkValidity(char)    -- checks if what we have is a valid char
             if(char == '') then
@@ -349,7 +350,8 @@ function main()
         dictionary = readFile(arg[1])
         file = arg[1]
     else
-        dictionary = allWords
+        print("you must specify an argument")
+        os.exit()
     end
     wordArray = {}
     guessArray = {}
